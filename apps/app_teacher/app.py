@@ -56,13 +56,21 @@ class App:
     def __init__(self):
         self.buffer_text = None
         self.config = configparser.ConfigParser()
-        self.config.read(os.path.split(__file__)[0] + "/settings.conf")
+        self.config.read(os.getcwd() + "/settings.conf")
+
+        print("CONF_FILE:", os.getcwd() + "/settings.conf")
+        print("IP:", socket.gethostbyname(socket.gethostname()))
+
         try:
             self.SHOW_WINDOW = int(self.config["APP"]["SHOW_WINDOW"])
             self.SHOW_DATA = int(self.config["APP"]["SHOW_DATA"])
 
-            self.SERVER_PORT = int(self.config["SERVER"]["SERVER_PORT"])
-            self.SERVER_HOST = self.config["SERVER"]["SERVER_HOST"]
+            self.SERVER_PORT = 5567
+            self.SERVER_HOST = self.config["SERVER"]["ADDRESS"]
+            if self.SERVER_HOST != "None":
+                self.SERVER_HOST = self.config["SERVER"]["ADDRESS"]
+            else:
+                self.SERVER_HOST = socket.gethostbyname(socket.gethostname())
 
             self.MAX_CONNECTIONS = int(self.config["CONNECTIONS"]["MAX_CONNECTIONS"])
 

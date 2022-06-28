@@ -17,6 +17,7 @@ class Client(socket.socket):
     def __init__(self, host, port, warning_disconnect=0):
         self.warning_disconnect = warning_disconnect
         self.address = host, port
+
         try:
             super().__init__(socket.AF_INET, socket.SOCK_STREAM)
             self.connect(self.address)
@@ -43,9 +44,18 @@ class App:
         self.config = configparser.ConfigParser()
         self.config.read(os.path.split(__file__)[0] + "/settings.conf")
 
+        self.config.read(os.getcwd() + "/settings.conf")
+
+        print("CONF_FILE:", os.getcwd() + "/settings.conf")
+        print("IP:", socket.gethostbyname(socket.gethostname()))
+
         try:
-            self.SERVER_PORT = int(self.config["SERVER"]["SERVER_PORT"])
-            self.SERVER_IP = self.config["SERVER"]["SERVER_IP"]
+            self.SERVER_PORT = 5567
+            self.SERVER_IP = self.config["SERVER"]["ADDRESS"]
+            if self.SERVER_IP != "None":
+                self.SERVER_IP = self.config["SERVER"]["SERVER_HOST"]
+            else:
+                self.SERVER_IP = socket.gethostbyname(socket.gethostname())
 
             self.AUTOCOPY = int(self.config["APP"]["AUTOCOPY"])
 
